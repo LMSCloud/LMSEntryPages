@@ -126,6 +126,7 @@ gulp.task('static', ()=>{
 
 gulp.task('build', ['static'], () => {
     run(`
+        rm *.kpz ;
         mkdir dist ;
         cp -r Koha dist/. ;
         sed -i -e "s/{VERSION}/${package_json.version}/g" ${pm_file_path_full_dist} ;

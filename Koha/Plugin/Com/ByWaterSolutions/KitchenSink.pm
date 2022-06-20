@@ -21,25 +21,23 @@ use Cwd qw(abs_path);
 use Data::Dumper;
 use LWP::UserAgent;
 use MARC::Record;
-use Mojo::JSON qw(decode_json);;
+use Mojo::JSON qw(decode_json);
 use URI::Escape qw(uri_unescape);
 
 ## Here we set our plugin version
-our $VERSION = "{VERSION}";
+our $VERSION         = "2.1.30";
 our $MINIMUM_VERSION = "{MINIMUM_VERSION}";
 
 ## Here is our metadata, some keys are required, some are optional
 our $metadata = {
     name            => 'Example Kitchen-Sink Plugin',
-    author          => 'Kyle M Hall',
-    date_authored   => '2009-01-27',
-    date_updated    => "1900-01-01",
+    author          => 'LMSCloud GmbH',
+    date_authored   => '2022-06-20',
+    date_updated    => "2022-06-20",
     minimum_version => $MINIMUM_VERSION,
     maximum_version => undef,
     version         => $VERSION,
-    description     => 'This plugin implements every available feature '
-      . 'of the plugin system and is meant '
-      . 'to be documentation and a starting point for writing your own plugins!',
+    description     => 'Generate and edit LMSCloud\'s entry pages.',
 };
 
 ## This is the minimum code required for a plugin's 'new' method
@@ -110,7 +108,7 @@ sub to_marc {
 
     foreach my $line ( split( /\n/, $data ) ) {
         my $record = MARC::Record->new();
-        my ( $firstname, $initial, $lastname, $year, $title ) = split(/:/, $line );
+        my ( $firstname, $initial, $lastname, $year, $title ) = split( /:/, $line );
 
         ## create an author field.
         my $author_field = MARC::Field->new(
@@ -151,7 +149,7 @@ sub opac_online_payment_begin {
     my $cgi = $self->{'cgi'};
 
     my ( $template, $borrowernumber ) = get_template_and_user(
-        {   template_name   => abs_path( $self->mbf_path( 'opac_online_payment_begin.tt' ) ),
+        {   template_name   => abs_path( $self->mbf_path('opac_online_payment_begin.tt') ),
             query           => $cgi,
             type            => 'opac',
             authnotrequired => 0,
@@ -161,7 +159,7 @@ sub opac_online_payment_begin {
 
     my @accountline_ids = $cgi->multi_param('accountline');
 
-    my $rs = Koha::Database->new()->schema()->resultset('Accountline');
+    my $rs           = Koha::Database->new()->schema()->resultset('Accountline');
     my @accountlines = map { $rs->find($_) } @accountline_ids;
 
     $template->param(
@@ -170,7 +168,6 @@ sub opac_online_payment_begin {
         enable_opac_payments => $self->retrieve_data('enable_opac_payments'),
         accountlines         => \@accountlines,
     );
-
 
     $self->output_html( $template->output() );
 }
@@ -183,9 +180,7 @@ sub opac_online_payment_end {
     my $cgi = $self->{'cgi'};
 
     my ( $template, $borrowernumber ) = get_template_and_user(
-        {
-            template_name =>
-              abs_path( $self->mbf_path('opac_online_payment_end.tt') ),
+        {   template_name   => abs_path( $self->mbf_path('opac_online_payment_end.tt') ),
             query           => $cgi,
             type            => 'opac',
             authnotrequired => 0,
@@ -203,16 +198,11 @@ sub opac_online_payment_end {
     $m = "no_accountlines" unless @accountline_ids;
 
     if ( $amount && @accountline_ids ) {
-        my $account = Koha::Account->new( { patron_id => $borrowernumber } );
-        my @accountlines = Koha::Account::Lines->search(
-            {
-                accountlines_id => { -in => \@accountline_ids }
-            }
-        )->as_list();
+        my $account      = Koha::Account->new( { patron_id => $borrowernumber } );
+        my @accountlines = Koha::Account::Lines->search( { accountlines_id => { -in => \@accountline_ids } } )->as_list();
         foreach my $id (@accountline_ids) {
             $account->pay(
-                {
-                    amount => $amount,
+                {   amount => $amount,
                     lines  => \@accountlines,
                     note   => "Paid via KitchenSink ImaginaryPay",
                 }
@@ -237,12 +227,11 @@ sub opac_online_payment_end {
 ## tags. By not adding them automatically for you, you'll have a chance
 ## to include external CSS files as well!
 sub opac_head {
-    my ( $self ) = @_;
+    my ($self) = @_;
 
     return q|
         <style>
           body {
-            background-color: orange;
           }
         </style>
     |;
@@ -253,25 +242,23 @@ sub opac_head {
 ## <script> tags. By not adding them automatically for you, you'll have a
 ## chance to include other javascript files if necessary.
 sub opac_js {
-    my ( $self ) = @_;
+    my ($self) = @_;
 
     return q|
         <script>console.log("Thanks for testing the kitchen sink plugin!");</script>
     |;
 }
 
-
 ## If your plugin needs to add some CSS to the staff intranet, you'll want
 ## to return that CSS here. Don't forget to wrap your CSS in <style>
 ## tags. By not adding them automatically for you, you'll have a chance
 ## to include external CSS files as well!
 sub intranet_head {
-    my ( $self ) = @_;
+    my ($self) = @_;
 
     return q|
         <style>
           body {
-            background-color: orange;
           }
         </style>
     |;
@@ -282,7 +269,7 @@ sub intranet_head {
 ## <script> tags. By not adding them automatically for you, you'll have a
 ## chance to include other javascript files if necessary.
 sub intranet_js {
-    my ( $self ) = @_;
+    my ($self) = @_;
 
     return q|
         <script>console.log("Thanks for testing the kitchen sink plugin!");</script>
@@ -293,7 +280,7 @@ sub intranet_js {
 ## You'll want to return a string of raw html here, most likely a button or other
 ## toolbar element of some form. See bug 20968 for more details.
 sub intranet_catalog_biblio_enhancements_toolbar_button {
-    my ( $self ) = @_;
+    my ($self) = @_;
 
     return q|
         <a class="btn btn-default btn-sm" onclick="alert('Peace and long life');">
@@ -312,25 +299,24 @@ sub configure {
     my $cgi = $self->{'cgi'};
 
     unless ( $cgi->param('save') ) {
-        my $template = $self->get_template({ file => 'configure.tt' });
+        my $template = $self->get_template( { file => 'configure.tt' } );
 
         ## Grab the values we already have for our settings, if any exist
         $template->param(
             enable_opac_payments => $self->retrieve_data('enable_opac_payments'),
-            foo             => $self->retrieve_data('foo'),
-            bar             => $self->retrieve_data('bar'),
-            last_upgraded   => $self->retrieve_data('last_upgraded'),
+            foo                  => $self->retrieve_data('foo'),
+            bar                  => $self->retrieve_data('bar'),
+            last_upgraded        => $self->retrieve_data('last_upgraded'),
         );
 
         $self->output_html( $template->output() );
     }
     else {
         $self->store_data(
-            {
-                enable_opac_payments => $cgi->param('enable_opac_payments'),
-                foo                => $cgi->param('foo'),
-                bar                => $cgi->param('bar'),
-                last_configured_by => C4::Context->userenv->{'number'},
+            {   enable_opac_payments => $cgi->param('enable_opac_payments'),
+                foo                  => $cgi->param('foo'),
+                bar                  => $cgi->param('bar'),
+                last_configured_by   => C4::Context->userenv->{'number'},
             }
         );
         $self->go_home();
@@ -372,7 +358,12 @@ sub uninstall() {
 
     my $table = $self->get_qualified_table_name('mytable');
 
-    return C4::Context->dbh->do("DROP TABLE IF EXISTS $table");
+    my $other_table = $self->get_qualified_table_name('landing_page_items');
+
+    C4::Context->dbh->do("DROP TABLE IF EXISTS $table");
+    C4::Context->dbh->do("DROP TABLE IF EXISTS $other_table");
+
+    return 1;
 }
 
 ## These are helper functions that are specific to this plugin
@@ -382,12 +373,12 @@ sub report_step1 {
     my ( $self, $args ) = @_;
     my $cgi = $self->{'cgi'};
 
-    my $template = $self->get_template({ file => 'report-step1.tt' });
+    my $template = $self->get_template( { file => 'report-step1.tt' } );
 
-    my @libraries = Koha::Libraries->search;
-    my @categories = Koha::Patron::Categories->search({}, {order_by => ['description']});
+    my @libraries  = Koha::Libraries->search;
+    my @categories = Koha::Patron::Categories->search( {}, { order_by => ['description'] } );
     $template->param(
-        libraries => \@libraries,
+        libraries  => \@libraries,
         categories => \@categories,
     );
 
@@ -414,8 +405,7 @@ sub report_step2 {
     my $toYear  = $cgi->param('toYear');
 
     my ( $fromDate, $toDate );
-    if ( $fromDay && $fromMonth && $fromYear && $toDay && $toMonth && $toYear )
-    {
+    if ( $fromDay && $fromMonth && $fromYear && $toDay && $toMonth && $toYear ) {
         $fromDate = "$fromYear-$fromMonth-$fromDay";
         $toDate   = "$toYear-$toMonth-$toDay";
     }
@@ -451,7 +441,7 @@ sub report_step2 {
         $filename = 'report-step2-html.tt';
     }
 
-    my $template = $self->get_template({ file => $filename });
+    my $template = $self->get_template( { file => $filename } );
 
     $template->param(
         date_ran     => dt_from_string(),
@@ -470,7 +460,20 @@ sub tool_step1 {
     my ( $self, $args ) = @_;
     my $cgi = $self->{'cgi'};
 
-    my $template = $self->get_template({ file => 'tool-step1.tt' });
+    my $template = $self->get_template( { file => 'tool-step1.tt' } );
+
+    my $dbh                     = C4::Context->dbh;
+    my $landing_page_item_table = $self->get_qualified_table_name('landing_page_items');
+
+    my $array_ref = $dbh->selectcol_arrayref( "SELECT lang, content FROM opac_news;", { Columns => [ 1, 2 ] } );
+
+    my %landing_page_items = @$array_ref;
+
+    # warn Dumper( '##### 1 #######################################################line: ' . __LINE__ );
+    # warn Dumper( \%landing_page_items );
+    # warn Dumper('##### end1 #######################################################');
+
+    $template->param( landing_page_items => \%landing_page_items );
 
     $self->output_html( $template->output() );
 }
@@ -479,32 +482,27 @@ sub tool_step2 {
     my ( $self, $args ) = @_;
     my $cgi = $self->{'cgi'};
 
-    my $template = $self->get_template({ file => 'tool-step2.tt' });
-
-    my $borrowernumber = C4::Context->userenv->{'number'};
-    my $borrower = Koha::Patrons->find( $borrowernumber );
-    $template->param( 'victim' => $borrower->unblessed() );
-    $template->param( 'victim' => $borrower );
-
-    $borrower->firstname('Bob')->store;
-
     my $dbh = C4::Context->dbh;
 
-    my $table = $self->get_qualified_table_name('mytable');
+    my $entry_page_identifier = $cgi->param('entryPageIdentifier');
+    my $entry_page_content    = $cgi->param('entryPageContent');
 
-    my $sth   = $dbh->prepare("SELECT DISTINCT(borrowernumber) FROM $table");
-    $sth->execute();
-    my @victims;
-    while ( my $r = $sth->fetchrow_hashref() ) {
-        my $brw = Koha::Patrons->find( $r->{'borrowernumber'} )->unblessed();
-        push( @victims, ( $brw ) );
-    }
-    $template->param( 'victims' => \@victims );
+    warn Dumper( '##### 1 #######################################################line: ' . __LINE__ );
+    warn Dumper( $entry_page_identifier );
+    warn Dumper('##### end1 #######################################################');
 
-    $dbh->do( "INSERT INTO $table ( borrowernumber ) VALUES ( ? )",
-        undef, ($borrowernumber) );
+    my $query = qq{UPDATE opac_news SET content = '$entry_page_content' WHERE lang = '$entry_page_identifier'};
+
+    my $success = $dbh->do($query) or die $dbh->errstr;
+
+    warn Dumper( '##### 1 #######################################################line: ' . __LINE__ );
+    warn Dumper( $success );
+    warn Dumper('##### end1 #######################################################');
+
+    my $template = $self->get_template( { file => 'tool-step2.tt' } );
 
     $self->output_html( $template->output() );
+
 }
 
 ## API methods
@@ -524,8 +522,8 @@ sub api_routes {
 }
 
 sub api_namespace {
-    my ( $self ) = @_;
-    
+    my ($self) = @_;
+
     return 'kitchensink';
 }
 
@@ -569,7 +567,7 @@ Plugin hook running code from a cron job
 =cut
 
 sub cronjob_nightly {
-    my ( $self ) = @_;
+    my ($self) = @_;
 
     print "Remember to clean the kitchen\n";
 }
@@ -584,7 +582,7 @@ in process_message_queue.pl
 sub before_send_messages {
     my ( $self, $params ) = @_;
 
-    print "Plugin hook before_send_message called with the params: " . Data::Dumper::Dumper( $params );
+    print "Plugin hook before_send_message called with the params: " . Data::Dumper::Dumper($params);
 }
 
 =head3 item_barcode_transform
@@ -598,7 +596,7 @@ sub item_barcode_transform {
 
     # Second arg is a ref to barcode value, for recursive call
     # this ref needs to be altered, no need to return new value
-    $$barcode_ref = "I".$$barcode_ref;
+    $$barcode_ref = "I" . $$barcode_ref;
 }
 
 =head3 patron_barcode_transform
@@ -612,7 +610,7 @@ sub patron_barcode_transform {
 
     # Second arg is a ref to barcode value, for recursive call
     # this ref needs to be altered, no need to return new value
-    $$barcode_ref = "P".$$barcode_ref;
+    $$barcode_ref = "P" . $$barcode_ref;
 }
 
 =head3 intranet_catalog_biblio_tab
@@ -627,20 +625,18 @@ https://bugs.koha-community.org/bugzilla3/show_bug.cgi?id=23050
 sub intranet_catalog_biblio_tab {
     my @tabs;
     push @tabs,
-      Koha::Plugins::Tab->new(
-        {
-            title   => 'Tab 1',
+        Koha::Plugins::Tab->new(
+        {   title   => 'Tab 1',
             content => 'This is content for tab 1'
         }
-      );
+        );
 
     push @tabs,
-      Koha::Plugins::Tab->new(
-        {
-            title   => 'Tab 2',
+        Koha::Plugins::Tab->new(
+        {   title   => 'Tab 2',
             content => 'This is content for tab 2'
         }
-      );
+        );
 
     return @tabs;
 }

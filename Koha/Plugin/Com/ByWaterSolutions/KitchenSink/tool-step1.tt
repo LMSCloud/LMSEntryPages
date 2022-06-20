@@ -1,24 +1,225 @@
-[% INCLUDE 'doc-head-open.inc' %]
- <title>Koha: Kitchen Sink Plugin: Example Tool</title>
-[% INCLUDE 'doc-head-close.inc' %]
+[% USE Koha %]
+<title>Koha: Kitchen Sink Plugin: Example Tool</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css"
+    integrity="sha512-HqxHUkJM0SYcbvxUw5P60SzdOTy/QVwA1JJrvaXJv4q7lmbDZCmZaqz01UPOaQveoxfYRv1tHozWGPMcuTBuvQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+<title>LMSEntryPages - Configuration</title>
+<link rel="stylesheet" data-name="vs/editor/editor.main"
+    href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/editor/editor.main.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/he/1.2.0/he.min.js"
+    integrity="sha512-PEsccDx9jqX6Dh4wZDCnWMaIO3gAaU0j46W//sSqQhUQxky6/eHZyeB3NrXD2xsyugAKd4KPiDANkcuoEa2JuA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
+
+
 <body>
-[% INCLUDE 'header.inc' %]
-[% INCLUDE 'cat-search.inc' %]
+    <nav id="breadcrumbs" class="breadcrumb is-centered" aria-label="breadcrumbs">
+        <ul>
+            <li><a href="/cgi-bin/koha/mainpage.pl">Home</a> </li>
+            <li><a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a></li>
+            <li class="is-active"><a href="#" aria-current="page">LMSEntryPages</a></li>
+        </ul>
+    </nav>
 
-<div id="breadcrumbs"><a href="/cgi-bin/koha/mainpage.pl">Home</a> &rsaquo; <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a> &rsaquo; Kitchen Sink &rsaquo; Example Tool</div>
+    <div class="lep-container" style="margin: 1rem;">
+        <div id="plugin-root">
+            <nav class="columns">
+                <div class="column is-1">
 
-<div id="doc3">
-    <p>This is an example tool plugin for Koha. It has a button. What does it do? Nobody really knows. Only one way to find out.
+                    <img src="[% PLUGIN_PATH %]/logo.png">
+                </div>
 
-    <!-- Notice our form here has no 'action', this is good, it means that our forms will always get passed back to 'plugins/run.pl'. You could hard code it instead if you prefer -->
-    <form method="post">
-        <input type="hidden" name="class" value="[% CLASS %]"/>
-        <input type="hidden" name="method" value="[% METHOD %]"/>
+                <div class="lep-tabs tabs is-boxed level-item column is-11">
+                    <ul>
+                        <li><a href="#">OpacNavRight</a></li>
+                        <li><a href="#">OpacMainPageLeftPanel</a></li>
+                        <li><a href="#">opacheader</a></li>
+                        <li><a href="#">OpacMainUserBlock</a></li>
+                        <li><a href="#">OpacLoginInstructions</a></li>
+                        <li class="is-active"><a href="#">OpacEntryPageChildto9</a></li>
+                        <li><a href="#">OpacEntryPageChildfrom9</a></li>
+                        <li><a href="#">OpacEntryPageAdult</a></li>
+                    </ul>
+                </div>
 
-        <br/>
 
-        <input name="submitted" type="submit" value="Click me" />
-    </form>
+            </nav>
 
-[% INCLUDE 'intranet-bottom.inc' %]
+            <div class="columns">
+                <aside class="lep-sidebar menu column is-1">
+                    <p class="menu-label">Locale</p>
+                    <ul class="menu-list lep-sidebar-locale">
+                        <li><a class="" href="#">en</a></li>
+                        <li><a class="is-active" href="#">de-DE</a></li>
+                    </ul>
+                    <p class="menu-label lep-sidebar-settings">Settings</p>
+                    <ul class="menu-list">
+                        <li><a href="#">Settings</a></li>
+                    </ul>
+                </aside>
+
+                <div class="lep-workspace column is-11">
+                    <div id="lep-editor" style="height: 600px; border: 1px solid lightslategrey;"></div>
+                </div>
+
+                <script>
+                    var require = {
+                        paths: {
+                            'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs'
+                        }
+                    }
+                </script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.min.js"></script>
+                <script
+                    src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/editor/editor.main.nls.js">
+                </script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/editor/editor.main.js">
+                </script>
+                <script>
+                    const entryPages = {
+                        'de-DE': {
+                            OpacNavRight: `[% landing_page_items.OpacNavRight_de-DE | html %]`,
+                            OpacMainPageLeftPanel: `[% landing_page_items.OpacMainPageLeftPanel_de-DE | html %]`,
+                            opacheader: `[% landing_page_items.opacheader_de-DE | html %]`,
+                            OpacMainUserBlock: `[% landing_page_items.OpacMainUserBlock_de-DE | html %]`,
+                            OpacLoginInstructions: `[% landing_page_items.OpacLoginInstructions_de-DE | html %]`,
+                            OpacEntryPageChildto9: `[% Koha.Preference('OpacEntryPageChildto9_de-DE') | html %]`,
+                            OpacEntryPageChildfrom9: `[% Koha.Preference('OpacEntryPageChildfrom9_de-DE') | html %]`,
+                            OpacEntryPageAdult: `[% Koha.Preference('OpacEntryPageAdult_de-DE') | html %]`
+                        },
+                        'en': {
+                            OpacNavRight: `[% landing_page_items.OpacNavRight_en | html %]`,
+                            OpacMainPageLeftPanel: `[% landing_page_items.OpacMainPageLeftPanel_en | html %]`,
+                            opacheader: `[% landing_page_items.opacheader_en | html %]`,
+                            OpacMainUserBlock: `[% landing_page_items.OpacMainUserBlock_en | html %]`,
+                            OpacLoginInstructions: `[% landing_page_items.OpacLoginInstructions_en | html %]`,
+                            OpacEntryPageChildto9: `[% Koha.Preference('OpacEntryPageChildto9_en') | html %]`,
+                            OpacEntryPageChildfrom9: `[% Koha.Preference('OpacEntryPageChildfrom9_en') | html %]`,
+                            OpacEntryPageAdult: `[% Koha.Preference('OpacEntryPageAdult_en') | html %]`
+                        }
+                    };
+
+                    const lepEditor = monaco.editor.create(document.getElementById('lep-editor'), {
+                        value: he.decode(entryPages['de-DE']['OpacEntryPageChildto9']),
+                        language: 'html',
+                    });
+                </script>
+
+            </div>
+
+            <form method="post" class="level">
+                <div class="level-left"></div>
+                <div class="level-right field is-grouped">
+                    <div class="control">
+                        <button class="button is-warning" id="lep-button-save">Save</button>
+                    </div>
+
+                    <input type="hidden" name="class" value="[% CLASS %]" />
+                    <input type="hidden" name="method" value="[% METHOD %]" />
+
+                    <input type="hidden" name="entryPageIdentifier" id="entryPageIdentifier">
+                    <input type="hidden" name="entryPageContent" id="entryPageContent">
+
+                    <div class="control">
+                        <input name="submitted" type="submit" value="Submit" class="button is-primary" />
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+
+    <script>
+        const localeOptions = document.querySelectorAll('.lep-sidebar-locale > li > a');
+        const entryPageEditorTabs = document.querySelectorAll('.lep-tabs > ul > li');
+
+        const saveButton = document.getElementById('lep-button-save');
+
+        /* Input field handles */
+        const entryPageIdentifier = document.getElementById('entryPageIdentifier');
+        const entryPageContent = document.getElementById('entryPageContent');
+
+        const getSystempreferenceIdentifier = () => {
+            let indexOfActive;
+
+            indexOfActive = Array.from(entryPageEditorTabs).findIndex((entryPageEditorTab) => {
+                return entryPageEditorTab.classList[0] === 'is-active'
+            });
+            const title = entryPageEditorTabs[indexOfActive].firstChild.innerText;
+
+            indexOfActive = Array.from(localeOptions).findIndex((localeOption) => {
+                return localeOption.classList[0] = ['is-active']
+            });
+            const locale = localeOptions[indexOfActive].innerText;
+
+            return {
+                title,
+                locale
+            };
+        };
+
+        const updateInputFields = () => {
+            const {
+                title,
+                locale
+            } = getSystempreferenceIdentifier();
+            entryPageIdentifier.value = `${title}_${locale}`;
+            entryPageContent.value = lepEditor.getModel().getValue();
+        }
+
+        const updateEditorContent = (content) => {
+            lepEditor.getModel().setValue(he.decode(content));
+            // console.log(lepEditor.getModel().getValue());
+            return;
+        };
+
+        const handleClickLocaleSetting = (e) => {
+            e.preventDefault();
+            localeOptions.forEach((localeOption) => {
+                localeOption.classList.remove('is-active');
+            });
+            e.target.classList.add('is-active');
+            const {
+                title,
+                locale
+            } = getSystempreferenceIdentifier();
+            updateEditorContent(entryPages[locale][title]);
+            updateInputFields();
+        };
+
+        const handleClickEntryPageEditorTab = (e) => {
+            e.preventDefault();
+            entryPageEditorTabs.forEach((entryPageEditorTab) => {
+                entryPageEditorTab.classList.remove('is-active');
+            });
+            e.target.parentNode.classList.add('is-active');
+            const {
+                title,
+                locale
+            } = getSystempreferenceIdentifier();
+            updateEditorContent(entryPages[locale][title]);
+            updateInputFields();
+        };
+
+        const handleClickSaveButton = (e) => {
+            e.preventDefault();
+            const {
+                title,
+                locale
+            } = getSystempreferenceIdentifier();
+            entryPages[locale][title] = lepEditor.getModel().getValue();
+            updateInputFields();
+            console.log(entryPageIdentifier, entryPageContent);
+        };
+
+        entryPageEditorTabs.forEach((entryPageEditorTab) => {
+            entryPageEditorTab.addEventListener('click', handleClickEntryPageEditorTab)
+        });
+        localeOptions.forEach((localeOption) => {
+            localeOption.addEventListener('click', handleClickLocaleSetting);
+        })
+        saveButton.addEventListener('click', handleClickSaveButton);
+    </script>
+
+    [% INCLUDE 'intranet-bottom.inc' %]
