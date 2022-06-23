@@ -1,0 +1,51 @@
+[% INCLUDE 'doc-head-open.inc' %]
+<title>Koha - LMSEntryPages - Checkout</title>
+[% INCLUDE 'doc-head-close.inc' %]
+<script src="https://cdnjs.cloudflare.com/ajax/libs/he/1.2.0/he.min.js"
+    integrity="sha512-PEsccDx9jqX6Dh4wZDCnWMaIO3gAaU0j46W//sSqQhUQxky6/eHZyeB3NrXD2xsyugAKd4KPiDANkcuoEa2JuA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/default.min.css"
+    integrity="sha512-hasIneQUHlh06VNBe7f6ZcHmeRTLIaQWFd43YriJ0UND19bvYRauxthDg8E4eVNPm9bRUhr5JGeqH7FRFXQu5g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"
+    integrity="sha512-yUUc0qWm2rhM7X0EFe82LNnv2moqArj5nro/w1bi05A09hRVeIZbN6jlMoyu0+4I/Bu4Ck/85JQIU82T82M28w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+    [% INCLUDE 'header.inc' %]
+    [% INCLUDE 'cat-search.inc' %]
+
+    <div id="breadcrumbs"><a href="/cgi-bin/koha/mainpage.pl">Home</a> &rsaquo; <a
+            href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a> &rsaquo; LMSEntryPages</div>
+
+    <div id="lep-changes" class="container-fluid">
+        <div class="row">
+            <h1 class="col-md-11">[% entry_page_identifier %]</h1>
+            <form method="post" class="col-md-1" style="margin-top: .3rem;">
+                <input type="hidden" name="class" value="[% CLASS %]" />
+                <input type="hidden" name="method" value="[% METHOD %]" />
+
+                <input name="accepted" type="submit" value="Back to Editor" class="btn btn-primary" id="lep-button-submit" autofocus/>
+            </form>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="lep-changes-to-review col-md-12 language-html"">
+                <pre>
+                    <code id="entryPageContentDisplay"></code>
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const entryPageContent = he.decode(`[% entry_page_content | html %]`);
+        const entryPageContentDisplay = document.getElementById('entryPageContentDisplay');
+
+        entryPageContentDisplay.textContent = entryPageContent;
+
+        hljs.highlightAll();
+    </script>
+
+    [% INCLUDE 'intranet-bottom.inc' %]

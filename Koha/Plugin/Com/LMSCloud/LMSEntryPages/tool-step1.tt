@@ -1,9 +1,8 @@
 [% USE Koha %]
-<title>Koha: Kitchen Sink Plugin: Example Tool</title>
+<title>Koha - LMSEntryPages - Editor</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css"
     integrity="sha512-HqxHUkJM0SYcbvxUw5P60SzdOTy/QVwA1JJrvaXJv4q7lmbDZCmZaqz01UPOaQveoxfYRv1tHozWGPMcuTBuvQ=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
-<title>LMSEntryPages - Configuration</title>
 <link rel="stylesheet" data-name="vs/editor/editor.main"
     href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/editor/editor.main.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/he/1.2.0/he.min.js"
@@ -26,7 +25,7 @@
             <nav class="columns">
                 <div class="column is-1">
 
-                    <img src="[% PLUGIN_PATH %]/logo.png">
+                    <img src="https://www.lmscloud.de/s/misc/logo.png?t=1654149090">
                 </div>
 
                 <div class="lep-tabs tabs is-boxed level-item column is-11">
@@ -54,7 +53,7 @@
                     </ul>
                     <p class="menu-label lep-sidebar-settings">Settings</p>
                     <ul class="menu-list">
-                        <li><a href="#">Settings</a></li>
+                        <li><a href="#" style="text-decoration: line-through;" disabled>Settings</a></li>
                     </ul>
                 </aside>
 
@@ -76,27 +75,36 @@
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/editor/editor.main.js">
                 </script>
                 <script>
+                    [% OpacNavRight_de = 'OpacNavRight_de-DE' %]
+                    [% OpacMainPageLeftPanel_de = 'OpacMainPageLeftPanel_de-DE' %]
+                    [% opacheader_de = 'opacheader_de-DE' %]
+                    [% OpacMainUserBlock_de = 'OpacMainUserBlock_de-DE' %]
+                    [% OpacLoginInstructions_de = 'OpacLoginInstructions_de-DE' %]
+                    [% OpacEntryPageChildto9_de = 'OpacEntryPageChildto9_de-DE' %]
+                    [% OpacEntryPageChildfrom9_de = 'OpacEntryPageChildfrom9_de-DE' %]
+                    [% OpacEntryPageAdult_de = 'OpacEntryPageAdult_de-DE' %]
+
                     const entryPages = {
-                        'de-DE': {
-                            OpacNavRight: `[% landing_page_items.OpacNavRight_de-DE | html %]`,
-                            OpacMainPageLeftPanel: `[% landing_page_items.OpacMainPageLeftPanel_de-DE | html %]`,
-                            opacheader: `[% landing_page_items.opacheader_de-DE | html %]`,
-                            OpacMainUserBlock: `[% landing_page_items.OpacMainUserBlock_de-DE | html %]`,
-                            OpacLoginInstructions: `[% landing_page_items.OpacLoginInstructions_de-DE | html %]`,
-                            OpacEntryPageChildto9: `[% Koha.Preference('OpacEntryPageChildto9_de-DE') | html %]`,
-                            OpacEntryPageChildfrom9: `[% Koha.Preference('OpacEntryPageChildfrom9_de-DE') | html %]`,
-                            OpacEntryPageAdult: `[% Koha.Preference('OpacEntryPageAdult_de-DE') | html %]`
-                        },
                         'en': {
                             OpacNavRight: `[% landing_page_items.OpacNavRight_en | html %]`,
                             OpacMainPageLeftPanel: `[% landing_page_items.OpacMainPageLeftPanel_en | html %]`,
                             opacheader: `[% landing_page_items.opacheader_en | html %]`,
                             OpacMainUserBlock: `[% landing_page_items.OpacMainUserBlock_en | html %]`,
                             OpacLoginInstructions: `[% landing_page_items.OpacLoginInstructions_en | html %]`,
-                            OpacEntryPageChildto9: `[% Koha.Preference('OpacEntryPageChildto9_en') | html %]`,
-                            OpacEntryPageChildfrom9: `[% Koha.Preference('OpacEntryPageChildfrom9_en') | html %]`,
-                            OpacEntryPageAdult: `[% Koha.Preference('OpacEntryPageAdult_en') | html %]`
-                        }
+                            OpacEntryPageChildto9: `[% entry_page_items.OpacEntryPageChildto9_en | html %]`,
+                            OpacEntryPageChildfrom9: `[% entry_page_items.OpacEntryPageChildfrom9_en | html %]`,
+                            OpacEntryPageAdult: `[% entry_page_items.OpacEntryPageAdult_en | html %]`
+                        },
+                        'de-DE': {
+                            OpacNavRight: `[% landing_page_items.$OpacNavRight_de | html %]`,
+                            OpacMainPageLeftPanel: `[% landing_page_items.$OpacMainPageLeftPanel_de | html %]`,
+                            opacheader: `[% landing_page_items.$opacheader_de | html %]`,
+                            OpacMainUserBlock: `[% landing_page_items.$OpacMainUserBlock_de | html %]`,
+                            OpacLoginInstructions: `[% landing_page_items.$OpacLoginInstructions_de | html %]`,
+                            OpacEntryPageChildto9: `[% entry_page_items.$OpacEntryPageChildto9_de | html %]`,
+                            OpacEntryPageChildfrom9: `[% entry_page_items.$OpacEntryPageChildfrom9_de | html %]`,
+                            OpacEntryPageAdult: `[% entry_page_items.$OpacEntryPageAdult_de | html %]`
+                        },
                     };
 
                     const lepEditor = monaco.editor.create(document.getElementById('lep-editor'), {
@@ -121,7 +129,7 @@
                     <input type="hidden" name="entryPageContent" id="entryPageContent">
 
                     <div class="control">
-                        <input name="submitted" type="submit" value="Submit" class="button is-primary" />
+                        <input name="submitted" type="submit" value="Submit" class="button is-primary" id="lep-button-submit" disabled />
                     </div>
                 </div>
             </form>
@@ -135,6 +143,7 @@
         const entryPageEditorTabs = document.querySelectorAll('.lep-tabs > ul > li');
 
         const saveButton = document.getElementById('lep-button-save');
+        const submitButton = document.getElementById('lep-button-submit');
 
         /* Input field handles */
         const entryPageIdentifier = document.getElementById('entryPageIdentifier');
@@ -149,7 +158,7 @@
             const title = entryPageEditorTabs[indexOfActive].firstChild.innerText;
 
             indexOfActive = Array.from(localeOptions).findIndex((localeOption) => {
-                return localeOption.classList[0] = ['is-active']
+                return localeOption.classList[0] === 'is-active'
             });
             const locale = localeOptions[indexOfActive].innerText;
 
@@ -210,7 +219,8 @@
             } = getSystempreferenceIdentifier();
             entryPages[locale][title] = lepEditor.getModel().getValue();
             updateInputFields();
-            console.log(entryPageIdentifier, entryPageContent);
+            // console.log(entryPageIdentifier, entryPageContent);
+            submitButton.disabled = false;
         };
 
         entryPageEditorTabs.forEach((entryPageEditorTab) => {

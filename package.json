@@ -1,8 +1,8 @@
 {
-  "name": "koha-plugin-kitchen-sink",
-  "version": "2.1.30",
-  "previous_version": "2.1.29",
-  "description": "Koha Kitchen Sink Plugin",
+  "name": "lms-entry-pages",
+  "version": "1.0.0",
+  "previous_version": "1.0.0",
+  "description": "Generate and edit LMSCloud's entry pages.",
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-cli": "^1.2.2",
@@ -14,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bywatersolutions/koha-plugin-kitchen-sink.git"
+    "url": "git+https://github.com/LMSCloud/LMSEntryPages.git"
   },
-  "author": "Kyle M Hall <kyle@bywatersolutions.com>",
+  "author": "Paul Derscheid <paul.derscheid@lmscloud.de>",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/bywatersolutions/koha-plugin-kitchen-sink/issues"
+    "url": "https://github.com/LMSCloud/LMSEntryPages.git/issues"
   },
-  "homepage": "https://github.com/bywatersolutions/koha-plugin-kitchen-sink#readme",
+  "homepage": "https://github.com/LMSCloud/LMSEntryPages.git#readme",
   "dependencies": {
     "datetime": "0.0.3",
     "jsonfile": "^4.0.0",
