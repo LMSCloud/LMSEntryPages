@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Introduction
 
 The Kitchen Sink plugin for Koha is meant to be an exhaustive example of all the features a Koha plugin can posses.
@@ -21,3 +22,7 @@ To set up the Koha plugin system you must first make some changes to your instal
 * Restart your webserver
 
 Once set up is complete you will need to alter your UseKohaPlugins system preference. On the Tools page you will see the Tools Plugins and on the Reports page you will see the Reports Plugins.
+=======
+# LMSEntryPages
+Koha plugin that simplifies editing and updating LMSCloud's landing and entry pages. Uses bulma and the monaco-editor. 
+>>>>>>> 3b23c9f4030495970865c28e51253de30cabd856
