@@ -13,7 +13,7 @@ Koha plugin that simplifies editing and updating LMSCloud's landing and entry pa
 
 ## Important
 If you change your tab, your changes are **GONE** even if you clicked the **Save** button.\
-Saving the state of documents isn't implemented yet (Look at the [Roadmap](##Roadmap)).
+Saving the state of documents isn't implemented yet (Look at the [Roadmap](#Roadmap)).
 
 ## Roadmap
 - [] Saving current edits in documents by clicking **Save** or when switching editor tabs.
