@@ -16,8 +16,8 @@ If you change your tab, your changes are **GONE** even if you clicked the **Save
 Saving the state of documents isn't implemented yet (Look at the [Roadmap](#Roadmap)).
 
 ## Roadmap
-- [] Saving current edits in documents by clicking **Save** or when switching editor tabs.
-- [] Automatically select the last editor tab you've worked when you enter the tool or after submitting.
-- [] Integrate markup generation tools by LMSCloud.
-- [] Make all strings automatically translatable (at least from german to english).
-- [] Add a graphical component library where you can copy html to your clipboard.
+- [ ] Saving current edits in documents by clicking **Save** or when switching editor tabs.
+- [ ] Automatically select the last editor tab you've worked when you enter the tool or after submitting.
+- [ ] Integrate markup generation tools by LMSCloud.
+- [ ] Make all strings automatically translatable (at least from german to english).
+- [ ] Add a graphical component library where you can copy html to your clipboard.
