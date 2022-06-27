@@ -25,7 +25,7 @@ use Mojo::JSON qw(decode_json);
 use URI::Escape qw(uri_unescape);
 
 ## Here we set our plugin version
-our $VERSION         = "1.0.0";
+our $VERSION         = "1.1.0";
 our $MINIMUM_VERSION = "21.05.04";
 
 ## Here is our metadata, some keys are required, some are optional

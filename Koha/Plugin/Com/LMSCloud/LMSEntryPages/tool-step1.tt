@@ -149,6 +149,11 @@
         const entryPageIdentifier = document.getElementById('entryPageIdentifier');
         const entryPageContent = document.getElementById('entryPageContent');
 
+        const rememberLastEditorTabAndLocale = ({ title, locale }) => {
+            window.sessionStorage.setItem('editorTab', title);
+            window.sessionStorage.setItem('editorLocale', locale);
+        };
+
         const getSystempreferenceIdentifier = () => {
             let indexOfActive;
 
@@ -194,6 +199,7 @@
                 locale
             } = getSystempreferenceIdentifier();
             updateEditorContent(entryPages[locale][title]);
+            rememberLastEditorTabAndLocale({ title, locale });
             updateInputFields();
         };
 
@@ -208,6 +214,7 @@
                 locale
             } = getSystempreferenceIdentifier();
             updateEditorContent(entryPages[locale][title]);
+            rememberLastEditorTabAndLocale({ title, locale });
             updateInputFields();
         };
 
@@ -223,6 +230,32 @@
             submitButton.disabled = false;
         };
 
+        const handlePageLoad = () => {
+            const title = window.sessionStorage.getItem('editorTab');
+            const locale = window.sessionStorage.getItem('editorLocale');
+            if (!title || !locale) { return; }
+
+            const indexOfRememberedTab = Array.from(entryPageEditorTabs).findIndex((entryPageEditorTab) => {
+                return entryPageEditorTab.innerText === title;
+            });
+            entryPageEditorTabs.forEach((entryPageEditorTab) => {
+                entryPageEditorTab.classList.remove('is-active');
+            });
+            entryPageEditorTabs[indexOfRememberedTab].classList.add('is-active');
+
+            const indexOfRememberedLocale = Array.from(localeOptions).findIndex((localeOption) => {
+                return localeOption.innerText === locale;
+            });
+            localeOptions.forEach((localeOption) => {
+                localeOption.classList.remove('is-active');
+            });
+            localeOptions[indexOfRememberedLocale].classList.add('is-active');
+
+            updateEditorContent(entryPages[locale][title]);
+            updateInputFields();
+        };
+
+        
         entryPageEditorTabs.forEach((entryPageEditorTab) => {
             entryPageEditorTab.addEventListener('click', handleClickEntryPageEditorTab)
         });
@@ -230,6 +263,8 @@
             localeOption.addEventListener('click', handleClickLocaleSetting);
         })
         saveButton.addEventListener('click', handleClickSaveButton);
+
+        handlePageLoad();
     </script>
 
     [% INCLUDE 'intranet-bottom.inc' %]
